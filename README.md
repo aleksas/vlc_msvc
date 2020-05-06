@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/y16wm6t6frsmccek?svg=true)](https://ci.appveyor.com/project/aleksas/ffplay-msvs)
+[![Build status](https://ci.appveyor.com/api/projects/status/lu9a9maay6a3ertw?svg=true)](https://ci.appveyor.com/project/aleksas/vlc-msvc)
 
-# ffplay_msvs
-Compile ffplay using MS VS
+# vlc_msvs
+Compile libvlc using MS VS

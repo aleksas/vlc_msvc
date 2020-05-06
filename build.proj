@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<Import Project="Utils.targets" />
+
+	<ItemGroup>
+        <DownloadFiles Include="http://download.videolan.org/pub/videolan/vlc/3.0.10/vlc-3.0.10.tar.xz">
+            <RelDir></RelDir>
+            <SecondaryExtract>vlc-3.0.10.tar</SecondaryExtract>
+        </DownloadFiles>
+        <DownloadFiles Include="https://www.libsdl.org/release/SDL2-devel-2.0.10-VC.zip">
+            <RelDir></RelDir>
+        </DownloadFiles>
+        <!--<FFTools Include="ffplay.c;cmdutils.h" >
+            <RelDir>source</RelDir>
+            <UrlPrefix>https://raw.githubusercontent.com/FFmpeg/FFmpeg/release/4.2/fftools/</UrlPrefix>
+        </FFTools>
+        <SourceFiles Include="@(FFTools);@(FFTools)" />-->
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Platform)'=='x64'">
+        <DownloadFiles Include="http://download.videolan.org/pub/videolan/vlc/3.0.10/win64/vlc-3.0.10-win64.7z">
+            <RelDir>x64</RelDir>
+        </DownloadFiles>
+        <DownloadFiles Include="https://www.libsdl.org/release/SDL2-2.0.10-win32-x64.zip">
+            <RelDir>x64</RelDir>
+        </DownloadFiles>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Platform)'=='x86'">
+        <DownloadFiles Include="http://download.videolan.org/pub/videolan/vlc/3.0.10/win32/vlc-3.0.10-win32.7z">
+            <RelDir>x86</RelDir>
+        </DownloadFiles>
+        <DownloadFiles Include="https://www.libsdl.org/release/SDL2-2.0.10-win32-x86.zip">
+            <RelDir>x86</RelDir>
+        </DownloadFiles>
+	</ItemGroup>
+
+    <Target Name="Download Dependencies">
+        <Message Text="Platform:$(Platform) Configuration:$(Configuration)" />
+
+        <CreateItem
+            Include="@(SourceFiles->'%(UrlPrefix)%(Identity)')"
+            AdditionalMetadata="RelDir=%(RelDir)">
+           <Output
+               TaskParameter="Include"
+               ItemName="DownloadFiles"/>
+        </CreateItem>
+
+        <MakeDir Directories="download;dependencies;dependencies\x86;dependencies\x64"/>
+        <MakeDir Directories="download\%(DownloadFiles.RelDir)"/>
+        
+        <MakeDir Directories="%(SourceFiles.RelDir)"/>
+
+        <DownloadFile Address="@(DownloadFiles)" FileName="download\%(RelDir)\%(Filename)%(Extension)" />
+
+        <Copy
+            SourceFiles="@(SourceFiles->'download\%(RelDir)\%(Identity)')"
+            DestinationFiles="%(RelDir)\%(Filename)%(Extension)" 
+            SkipUnchangedFiles="true" />
+        
+        <Exec Command="powershell -command &quot;Install-Module -Name 7Zip4Powershell -Force&quot;" />
+        <Exec
+            Command="powershell -command &quot;&amp; Expand-7Zip -ArchiveFileName 'download\%(RelDir)\%(DownloadFiles.Filename)%(Extension)' -TargetPath '.\dependencies\%(RelDir)' &quot;" />
+        <Exec
+            Command="powershell -command &quot;&amp; Expand-7Zip -ArchiveFileName 'dependencies\%(RelDir)\%(DownloadFiles.SecondaryExtract)' -TargetPath '.\dependencies\%(RelDir)' &quot;" 
+            Condition="'%(DownloadFiles.SecondaryExtract)'!=''"/>
+    </Target>
+</Project>

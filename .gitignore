@@ -1,0 +1,6 @@
+dependencies/
+download/
+source/.vs/
+/source/Debug
+/source/x64
+/source/*.user

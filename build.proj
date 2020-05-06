@@ -58,11 +58,11 @@
             DestinationFiles="%(RelDir)\%(Filename)%(Extension)" 
             SkipUnchangedFiles="true" />
         
-        <Exec Command="powershell -command &quot;Install-Module -Name 7Zip4Powershell -Force&quot;" />
+        <Exec Command="powershell -command &quot;Install-Module -Verbose -Name 7Zip4Powershell -Force&quot;" />
         <Exec
-            Command="powershell -command &quot;&amp; Expand-7Zip -ArchiveFileName 'download\%(RelDir)\%(DownloadFiles.Filename)%(Extension)' -TargetPath '.\dependencies\%(RelDir)' &quot;" />
+            Command="powershell -command &quot;&amp; Expand-7Zip -Verbose -ArchiveFileName 'download\%(RelDir)\%(DownloadFiles.Filename)%(Extension)' -TargetPath '.\dependencies\%(RelDir)' &quot;" />
         <Exec
-            Command="powershell -command &quot;&amp; Expand-7Zip -ArchiveFileName 'dependencies\%(RelDir)\%(DownloadFiles.SecondaryExtract)' -TargetPath '.\dependencies\%(RelDir)' &quot;" 
+            Command="powershell -command &quot;&amp; Expand-7Zip -Verbose -ArchiveFileName 'dependencies\%(RelDir)\%(DownloadFiles.SecondaryExtract)' -TargetPath '.\dependencies\%(RelDir)' &quot;" 
             Condition="'%(DownloadFiles.SecondaryExtract)'!=''"/>
     </Target>
 </Project>

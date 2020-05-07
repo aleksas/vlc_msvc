@@ -8,11 +8,15 @@ build:
   project: source/play.sln
   verbosity: minimal
 artifacts:
-- path: source\Release\play.exe
+- path: source\Release\*.exe
+  name: win32
+- path: source\Release\*.dll
   name: win32
 - path: dependencies\x86\*.dll
   name: win32
-- path: source\x64\Release\play.exe
+- path: source\x64\Release\*.dll
+  name: win64
+- path: source\x64\Release\*.exe
   name: win64
 - path: dependencies\x64\*.dll
   name: win64

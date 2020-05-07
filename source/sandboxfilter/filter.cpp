@@ -36,6 +36,7 @@ typedef SSIZE_T ssize_t;
 struct IUnknown;
 #include <atomic>
 using namespace std;
+int poll(struct pollfd *fds, unsigned nfds, int timeout) { return 0; }
 
 #include <math.h>
 

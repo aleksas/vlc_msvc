@@ -174,7 +174,7 @@
       <AdditionalDependencies>libvlc-3.0.10.lib;libvlccore-3.0.10.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x86\vlc-3.0.10\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x86\vlc-3.0.10\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-0b25d870|Win32'">
@@ -198,7 +198,7 @@
       <AdditionalDependencies>libvlc-4.0.0-dev.lib;libvlccore-4.0.0-dev.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x86\vlc-4.0.0-dev\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x86\vlc-4.0.0-dev\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -222,7 +222,7 @@
       <AdditionalDependencies>libvlc-3.0.10.lib;libvlccore-3.0.10.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x64\vlc-3.0.10\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x64\vlc-3.0.10\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-0b25d870|x64'">
@@ -246,7 +246,7 @@
       <AdditionalDependencies>libvlc-4.0.0-dev.lib;libvlccore-4.0.0-dev.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x64\vlc-4.0.0-dev\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x64\vlc-4.0.0-dev\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -275,7 +275,7 @@
       <ImageHasSafeExceptionHandlers />
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x86\vlc-3.0.10\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x86\vlc-3.0.10\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-0b25d870|Win32'">
@@ -305,7 +305,7 @@
       </ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x86\vlc-4.0.0-dev\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x86\vlc-4.0.0-dev\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -333,7 +333,7 @@
       <AdditionalDependencies>libvlc-3.0.10.lib;libvlccore-3.0.10.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x64\vlc-3.0.10\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x64\vlc-3.0.10\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-0b25d870|x64'">
@@ -361,7 +361,7 @@
       <AdditionalDependencies>libvlc-4.0.0-dev.lib;libvlccore-4.0.0-dev.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x64\vlc-4.0.0-dev\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x64\vlc-4.0.0-dev\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -93,7 +93,7 @@ vlc_module_begin()
 		("Similarity sandbox"), "", false)
 	add_integer(CFG_PREFIX "shareddata", 0,
 		("Shared Data"), "", false)
-	//set_callbacks(Create, Destroy)
+	set_callbacks(Create, Destroy)
 	vlc_module_end()
 
 	static const char *const ppsz_filter_options[] = {

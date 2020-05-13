@@ -105,13 +105,17 @@ int main(int argc, char **argv) {
 
 	SharedData d;
 	context.pData = &d;
-	long long int ptr = (intptr_t)(void*)&d;
+	int64_t ptr = (intptr_t)(void*)&d;
+	int mi = ptr >> 32;
+	int li = (int32_t)ptr;
+
+	sprintf(context.pData, "olleh");
 
 	char const *media_argv[] = {
 		":sout=#transcode{vcodec=h264,acodec=mpga,ab=128,channels=2,samplerate=44100,scodec=none}:duplicate{dst=display,dst=std{access=file{no-overwrite},mux=mp4,dst=a.mp4}",
 	};
 
-	sprintf(sandbox_options, "sandboxfilter{color=0x00FF0000,similaritythres=5,saturationthres=20,shareddata=%lld}", ptr);
+	sprintf(sandbox_options, "sandboxfilter{color=0x00FF0000,similaritythres=5,saturationthres=20,mshareddata=%d,lshareddata=%d}", mi , li);
 
 	char const *vlc_argv[] = {
 		"--verbose=2",

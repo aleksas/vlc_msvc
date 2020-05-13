@@ -26,6 +26,7 @@
     <None Include="Source-0b25d870.def">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="filter.cpp">

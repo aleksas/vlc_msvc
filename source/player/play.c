@@ -24,15 +24,11 @@ typedef SSIZE_T ssize_t;
 #define WIDTH 640
 #define HEIGHT 480
 
-#define VIDEOWIDTH 320
-#define VIDEOHEIGHT 240
-
 typedef struct context_ {
     SDL_Renderer *renderer;
     SDL_Texture *texture;
     SDL_mutex *mutex;
 	SharedData *pData;
-    int n;
 } context;
 
 // VLC prepares to render a video frame.
@@ -55,17 +51,17 @@ static void unlock(void *data, void *id, void *const *p_pixels) {
     uint16_t *pixels = (uint16_t *)*p_pixels;
 
     // We can also render stuff.
-    int x, y;
+    /*int x, y;
     for(y = 10; y < 40; y++) {
         for(x = 10; x < 40; x++) {
             if(x < 13 || y < 13 || x > 36 || y > 36) {
-                pixels[y * VIDEOWIDTH + x] = 0xffff;
+                pixels[y * WIDTH + x] = 0xffff;
             } else {
                 // RV16 = 5+6+5 pixels per color, BGR.
-                pixels[y * VIDEOWIDTH + x] = 0x02ff;
+                pixels[y * WIDTH + x] = 0x02ff;
             }
         }
-    }
+    }*/
 
     SDL_UnlockTexture(c->texture);
     SDL_UnlockMutex(c->mutex);
@@ -77,12 +73,11 @@ static void display(void *data, void *id) {
     context *c = (context *)data;
 
     SDL_Rect rect;
-    rect.w = VIDEOWIDTH;
-    rect.h = VIDEOHEIGHT;
-    rect.x = (int)((1. + .5 * sin(0.03 * c->n)) * (WIDTH - VIDEOWIDTH) / 2);
-    rect.y = (int)((1. + .5 * cos(0.03 * c->n)) * (HEIGHT - VIDEOHEIGHT) / 2);
+    rect.w = WIDTH;
+    rect.h = HEIGHT;
+    rect.x = 0;
+    rect.y = 0;
 
-    SDL_SetRenderDrawColor(c->renderer, 0, 80, 0, 255);
     SDL_RenderClear(c->renderer);
     SDL_RenderCopy(c->renderer, c->texture, NULL, &rect);
     SDL_RenderPresent(c->renderer);
@@ -106,8 +101,8 @@ int main(int argc, char **argv) {
 	SharedData d;
 	context.pData = &d;
 	int64_t ptr = (intptr_t)(void*)&d;
-	int mi = ptr >> 32;
-	int li = (int32_t)ptr;
+	int32_t mi = ptr >> 32;
+	int32_t li = (uint32_t) ptr & 0x00000000FFFFFFFF;
 
 	sprintf(context.pData, "olleh");
 
@@ -122,8 +117,6 @@ int main(int argc, char **argv) {
 
         "--no-audio", // Don't play audio.
         "--no-xlib", // Don't use Xlib.
-
-		//"--vout", vmem_options, // Stream to memory
 
         // Apply a video filter.
         "--video-filter", sandbox_options
@@ -165,7 +158,7 @@ int main(int argc, char **argv) {
     context.texture = SDL_CreateTexture(
             context.renderer,
             SDL_PIXELFORMAT_BGR565, SDL_TEXTUREACCESS_STREAMING,
-            VIDEOWIDTH, VIDEOHEIGHT);
+            WIDTH, HEIGHT);
     if (!context.texture) {
         fprintf(stderr, "Couldn't create texture: %s\n", SDL_GetError());
         quit(5);
@@ -189,7 +182,7 @@ int main(int argc, char **argv) {
     libvlc_media_release(m);
 
     libvlc_video_set_callbacks(mp, lock, unlock, display, &context);
-    libvlc_video_set_format(mp, "RV16", VIDEOWIDTH, VIDEOHEIGHT, VIDEOWIDTH*2);
+    libvlc_video_set_format(mp, "RV16", WIDTH, HEIGHT, WIDTH*2);
     libvlc_media_player_play(mp);
 
     // Main loop.
@@ -220,8 +213,6 @@ int main(int argc, char **argv) {
                 pause = !pause;
                 break;
         }
-
-        if(!pause) { context.n++; }
 
         SDL_Delay(1000/10);
     }

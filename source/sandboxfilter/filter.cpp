@@ -249,7 +249,7 @@ static picture_t *Filter(filter_t *p_filter, picture_t *p_pic)
 
 	int64_t m = atomic_load(&p_sys->i_M_shareddata);
 	int64_t l = atomic_load(&p_sys->i_L_shareddata);
-	int64_t i_shareddata = m << 32 | l;
+	uint64_t i_shareddata = (m << 32) | (l & 0x00000000FFFFFFFF);
 
 	SharedData* p_shareddata = (SharedData*) i_shareddata;
 

@@ -1,3 +1,4 @@
+LIBRARY "libvlc.dll"
 EXPORTS
 	libvlc_add_intf
 	libvlc_audio_equalizer_get_amp_at_index

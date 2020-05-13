@@ -1,3 +1,4 @@
+LIBRARY "libvlccore.dll"
 EXPORTS
     AddMD5
     EndMD5

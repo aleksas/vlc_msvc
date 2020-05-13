@@ -177,7 +177,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x86\vlc-3.0.10\plugins\video_filter\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x86\vlc-3.0.10\plugins\video_filter\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-0b25d870|Win32'">
@@ -204,7 +204,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x86\vlc-4.0.0-dev\plugins\video_filter\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x86\vlc-4.0.0-dev\plugins\video_filter\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -231,7 +231,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x64\vlc-3.0.10\plugins\video_filter\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x64\vlc-3.0.10\plugins\video_filter\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-0b25d870|x64'">
@@ -258,7 +258,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x64\vlc-4.0.0-dev\plugins\video_filter\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x64\vlc-4.0.0-dev\plugins\video_filter\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -290,7 +290,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x86\vlc-3.0.10\plugins\video_filter\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x86\vlc-3.0.10\plugins\video_filter\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-0b25d870|Win32'">
@@ -323,7 +323,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x86\vlc-4.0.0-dev\plugins\video_filter\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x86\vlc-4.0.0-dev\plugins\video_filter\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -354,7 +354,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x64\vlc-3.0.10\plugins\video_filter\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x64\vlc-3.0.10\plugins\video_filter\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-0b25d870|x64'">
@@ -385,7 +385,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetPath) C:\WORK\vlc_msvc\dependencies\x64\vlc-4.0.0-dev\plugins\video_filter\</Command>
+      <Command>copy $(TargetPath) $(SolutionDir)..\dependencies\x64\vlc-4.0.0-dev\plugins\video_filter\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -410,6 +410,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
+    <ClInclude Include="fixtures.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

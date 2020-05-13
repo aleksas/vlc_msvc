@@ -52,6 +52,8 @@ int poll(struct pollfd *fds, unsigned nfds, int timeout) { return 0; }
 
 #include "common.h"
 
+#include "fixtures.h"
+
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
@@ -77,14 +79,6 @@ static const char *const ppsz_color_descriptions[] = {
   ("Red"), ("Fuchsia"), ("Yellow"), ("Lime"), ("Blue"), ("Aqua") };
 
 #define CFG_PREFIX "sandbox-"
-
-#ifdef VLC_4
-#define set_callbacks( activate, deactivate ) \
-    if (vlc_module_set(VLC_MODULE_CB_OPEN, #activate, (void *)(activate)) \
-     || vlc_module_set(VLC_MODULE_CB_CLOSE, #deactivate, \
-                       (void *)(deactivate))) \
-        goto error;
-#endif VLC_4
 
 vlc_module_begin()
 	set_description("Color sandbox filter")

@@ -24,6 +24,8 @@
   * Preamble
   *****************************************************************************/
 
+#define restrict 
+
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
@@ -46,7 +48,9 @@ int poll(struct pollfd *fds, unsigned nfds, int timeout) { return 0; }
 #include <vlc_atomic.h>
 #include <vlc_filter.h>
 #include <vlc_picture.h>
-#include "filter_picture.h"
+#include <filter_picture.h>
+
+#include "common.h"
 
 /*****************************************************************************
  * Local prototypes
@@ -75,24 +79,25 @@ static const char *const ppsz_color_descriptions[] = {
 #define CFG_PREFIX "sandbox-"
 
 vlc_module_begin()
-set_description(("Color sandbox filter"))
-set_shortname(("Color sandbox"))
-set_help(COLOR_HELP)
-set_category(CAT_VIDEO)
-set_subcategory(SUBCAT_VIDEO_VFILTER)
-set_capability("video filter", 0)
-add_rgb(CFG_PREFIX "color", 0x00FF0000, COLOR_TEXT,
-	COLOR_LONGTEXT, false)
+	set_description("Color sandbox filter")
+	set_shortname("Color sandbox")
+	set_help(COLOR_HELP)
+	set_category(CAT_VIDEO)
+	set_subcategory(SUBCAT_VIDEO_VFILTER)
+	set_capability("video filter", 0)
+	add_rgb(CFG_PREFIX "color", 0x00FF0000, COLOR_TEXT, COLOR_LONGTEXT, false)
 	change_integer_list(pi_color_values, ppsz_color_descriptions)
 	add_integer(CFG_PREFIX "saturationthres", 20,
 		("Saturation sandbox"), "", false)
 	add_integer(CFG_PREFIX "similaritythres", 15,
 		("Similarity sandbox"), "", false)
-	set_callbacks(Create, Destroy)
+	add_integer(CFG_PREFIX "shareddata", 0,
+		("Shared Data"), "", false)
+	//set_callbacks(Create, Destroy)
 	vlc_module_end()
 
 	static const char *const ppsz_filter_options[] = {
-		"color", "saturationthres", "similaritythres", NULL
+		"color", "saturationthres", "similaritythres", "shareddata", NULL
 };
 
 /*****************************************************************************
@@ -110,6 +115,7 @@ struct filter_sys_t
 	atomic_int i_simthres;
 	atomic_int i_satthres;
 	atomic_int i_color;
+	_Atomic_address p_shareddata;
 };
 
 /*****************************************************************************
@@ -145,7 +151,8 @@ static int Create(vlc_object_t *p_this)
 	}
 
 	/* Allocate structure */
-	p_sys = p_filter->p_sys = (filter_sys_t*) malloc(sizeof(filter_sys_t));
+	p_filter->p_sys = (filter_sys_t*) malloc(sizeof(filter_sys_t));
+	p_sys = (filter_sys_t*)p_filter->p_sys;
 	if (p_filter->p_sys == NULL)
 		return VLC_ENOMEM;
 
@@ -157,10 +164,13 @@ static int Create(vlc_object_t *p_this)
 		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "similaritythres"));
 	atomic_init(&p_sys->i_satthres,
 		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "saturationthres"));
+	atomic_init(&p_sys->p_shareddata,
+		var_CreateGetAddress(VLC_OBJECT(p_filter), CFG_PREFIX "shareddata"));
 
 	var_AddCallback(p_filter, CFG_PREFIX "color", FilterCallback, p_sys);
 	var_AddCallback(p_filter, CFG_PREFIX "similaritythres", FilterCallback, p_sys);
 	var_AddCallback(p_filter, CFG_PREFIX "saturationthres", FilterCallback, p_sys);
+	var_AddCallback(p_filter, CFG_PREFIX "shareddata", FilterCallback, p_sys);
 
 	return VLC_SUCCESS;
 }
@@ -173,11 +183,12 @@ static int Create(vlc_object_t *p_this)
 static void Destroy(vlc_object_t *p_this)
 {
 	filter_t *p_filter = (filter_t *)p_this;
-	filter_sys_t *p_sys = p_filter->p_sys;
+	filter_sys_t *p_sys = (filter_sys_t *) p_filter->p_sys;
 
 	var_DelCallback(p_filter, CFG_PREFIX "color", FilterCallback, p_sys);
 	var_DelCallback(p_filter, CFG_PREFIX "similaritythres", FilterCallback, p_sys);
 	var_DelCallback(p_filter, CFG_PREFIX "saturationthres", FilterCallback, p_sys);
+	var_DelCallback(p_filter, CFG_PREFIX "shareddata", FilterCallback, p_sys);
 	free(p_sys);
 }
 
@@ -217,10 +228,13 @@ static bool IsSimilar(int u, int v,
 static picture_t *Filter(filter_t *p_filter, picture_t *p_pic)
 {
 	picture_t *p_outpic;
-	filter_sys_t *p_sys = p_filter->p_sys;
+	filter_sys_t *p_sys = (filter_sys_t *) p_filter->p_sys;
 	int i_simthres = atomic_load(&p_sys->i_simthres);
+	char* p_shareddata = (char*) atomic_load(&p_sys->p_shareddata);
 	int i_satthres = atomic_load(&p_sys->i_satthres);
 	int i_color = atomic_load(&p_sys->i_color);
+
+	sprintf((char*)p_shareddata, "hello");
 
 	if (!p_pic) return NULL;
 
@@ -273,7 +287,7 @@ static picture_t *Filter(filter_t *p_filter, picture_t *p_pic)
 static picture_t *FilterPacked(filter_t *p_filter, picture_t *p_pic)
 {
 	picture_t *p_outpic;
-	filter_sys_t *p_sys = p_filter->p_sys;
+	filter_sys_t *p_sys = (filter_sys_t *) p_filter->p_sys;
 	int i_simthres = atomic_load(&p_sys->i_simthres);
 	int i_satthres = atomic_load(&p_sys->i_satthres);
 	int i_color = atomic_load(&p_sys->i_color);
@@ -342,6 +356,8 @@ static int FilterCallback(vlc_object_t *p_this, char const *psz_var,
 		atomic_store(&p_sys->i_color, newval.i_int);
 	else if (!strcmp(psz_var, CFG_PREFIX "similaritythres"))
 		atomic_store(&p_sys->i_simthres, newval.i_int);
+	else if (!strcmp(psz_var, CFG_PREFIX "shareddata"))
+		atomic_store(&p_sys->p_shareddata, newval.p_address);
 	else /* CFG_PREFIX "saturationthres" */
 		atomic_store(&p_sys->i_satthres, newval.i_int);
 

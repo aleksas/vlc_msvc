@@ -7,7 +7,7 @@
             <RelDir></RelDir>
             <SecondaryExtract>vlc-3.0.10.tar</SecondaryExtract>
         </DownloadFiles>
-        <DownloadFiles Include="https://github.com/videolan/vlc/archive/4.0.0-dev.zip">
+        <DownloadFiles Include="https://code.videolan.org/videolan/vlc/-/archive/600951ffd06cedacb63203dc5b444b3c13b11fe0/vlc-600951ffd06cedacb63203dc5b444b3c13b11fe0.zip">
             <RelDir></RelDir>
         </DownloadFiles>
         <DownloadFiles Include="https://www.libsdl.org/release/SDL2-devel-2.0.10-VC.zip">
@@ -24,7 +24,7 @@
         <DownloadFiles Include="http://download.videolan.org/pub/videolan/vlc/3.0.10/win64/vlc-3.0.10-win64.7z">
             <RelDir>x64</RelDir>
         </DownloadFiles>
-        <DownloadFiles Include="https://artifacts.videolan.org/vlc/nightly-win64/20200404-0504/vlc-4.0.0-dev-win64-ffac012c.zip">
+        <DownloadFiles Include="https://artifacts.videolan.org/vlc/nightly-win64/20200513-0447/vlc-4.0.0-dev-win64-0b25d870.zip">
             <RelDir>x64</RelDir>
         </DownloadFiles>
         <DownloadFiles Include="https://www.libsdl.org/release/SDL2-2.0.10-win32-x64.zip">
@@ -36,7 +36,7 @@
         <DownloadFiles Include="http://download.videolan.org/pub/videolan/vlc/3.0.10/win32/vlc-3.0.10-win32.7z">
             <RelDir>x86</RelDir>
         </DownloadFiles>
-        <DownloadFiles Include="https://artifacts.videolan.org/vlc/nightly-win32/20200404-0439/vlc-4.0.0-dev-win32-ffac012c.zip">
+        <DownloadFiles Include="https://artifacts.videolan.org/vlc/nightly-win32/20200513-0440/vlc-4.0.0-dev-win32-0b25d870.zip">
             <RelDir>x86</RelDir>
         </DownloadFiles>
         <DownloadFiles Include="https://www.libsdl.org/release/SDL2-2.0.10-win32-x86.zip">

@@ -1,3 +1,4 @@
 LIBRARY "libsandboxfilter_plugin.dll"
 EXPORTS
-	vlc_entry__3_0_0f
+	vlc_entry
+	vlc_entry_api_version

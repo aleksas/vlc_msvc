@@ -19,6 +19,8 @@ typedef SSIZE_T ssize_t;
 
 #include "vlc/vlc.h"
 
+#include "common.h"
+
 #define WIDTH 640
 #define HEIGHT 480
 
@@ -29,6 +31,7 @@ typedef struct context_ {
     SDL_Renderer *renderer;
     SDL_Texture *texture;
     SDL_mutex *mutex;
+	SharedData *pData;
     int n;
 } context;
 
@@ -93,23 +96,38 @@ static void quit(int c) {
 int main(int argc, char **argv) {
 
     libvlc_instance_t *libvlc;
-    libvlc_media_t *m;
-    libvlc_media_player_t *mp;
-    char const *vlc_argv[] = {
+	context context;
+
+	char sandbox_options[512];
+
+	libvlc_media_t *m;
+	libvlc_media_player_t *mp;
+
+	SharedData d;
+	context.pData = &d;
+	long long int ptr = (intptr_t)(void*)&d;
+
+	char const *media_argv[] = {
+		":sout=#transcode{vcodec=h264,acodec=mpga,ab=128,channels=2,samplerate=44100,scodec=none}:duplicate{dst=display,dst=std{access=file{no-overwrite},mux=mp4,dst=a.mp4}",
+	};
+
+	sprintf(sandbox_options, "sandboxfilter{color=0x00FF0000,similaritythres=5,saturationthres=20,shareddata=%lld}", ptr);
+
+	char const *vlc_argv[] = {
+		"--verbose=2",
 
         "--no-audio", // Don't play audio.
         "--no-xlib", // Don't use Xlib.
 
+		//"--vout", vmem_options, // Stream to memory
+
         // Apply a video filter.
-        //"--video-filter", "sepia",
-        //"--sepia-intensity=200"
+        "--video-filter", sandbox_options
     };
     int vlc_argc = sizeof(vlc_argv) / sizeof(*vlc_argv);
 
     SDL_Event event;
     int done = 0, action = 0, pause = 0, n = 0;
-
-    context context;
 
     if(argc < 2) {
         printf("Usage: %s <filename>\n", argv[0]);
@@ -154,7 +172,6 @@ int main(int argc, char **argv) {
     // If you don't have this variable set you must have plugins directory
     // with the executable or libvlc_new() will not work!
     printf("VLC_PLUGIN_PATH=%s\n", getenv("VLC_PLUGIN_PATH"));
-
     // Initialise libVLC.
     libvlc = libvlc_new(vlc_argc, vlc_argv);
     if(NULL == libvlc) {
@@ -206,8 +223,14 @@ int main(int argc, char **argv) {
     }
 
     // Stop stream and clean up libVLC.
-    libvlc_media_player_stop(mp);
+#ifdef VLC_4
+    libvlc_media_player_stop_async(mp);
+#elif VLC_3
+	libvlc_media_player_stop(mp);
+#endif
+
     libvlc_media_player_release(mp);
+
     libvlc_release(libvlc);
 
     // Close window and clean up libSDL.

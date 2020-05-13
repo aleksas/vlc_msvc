@@ -50,8 +50,6 @@ int poll(struct pollfd *fds, unsigned nfds, int timeout) { return 0; }
 #include <vlc_picture.h>
 #include <filter_picture.h>
 
-#include "common.h"
-
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/

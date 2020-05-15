@@ -93,15 +93,17 @@ vlc_module_begin()
 		("Saturation sandbox"), "", false)
 	add_integer(CFG_PREFIX "similaritythres", 15,
 		("Similarity sandbox"), "", false)
-	add_integer(CFG_PREFIX "mshareddata", 0,
+	add_integer(CFG_PREFIX "msl", 0,
 		("Shared Data M"), "", false)
-	add_integer(CFG_PREFIX "lshareddata", 0,
+	add_integer(CFG_PREFIX "lsl", 0,
 		("Shared Data L"), "", false)
+	add_integer(CFG_PREFIX "testvalue", 0,
+		("Test value"), "", false)
 	set_callbacks(Create, Destroy)
 	vlc_module_end()
 
 	static const char *const ppsz_filter_options[] = {
-		"color", "saturationthres", "similaritythres", "mshareddata", "lshareddata", NULL
+		"color", "saturationthres", "similaritythres", "msl", "lsl", "testvalue", NULL
 };
 
 /*****************************************************************************
@@ -120,8 +122,10 @@ struct filter_sys_t
 	atomic_int i_satthres;
 	atomic_int i_color;
 
-	atomic_int i_M_shareddata;
-	atomic_int i_L_shareddata;
+	atomic_int i_msl;
+	atomic_int i_lsl;
+
+	atomic_int i_testvalue;
 };
 
 /*****************************************************************************
@@ -170,16 +174,19 @@ static int Create(vlc_object_t *p_this)
 		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "similaritythres"));
 	atomic_init(&p_sys->i_satthres,
 		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "saturationthres"));
-	atomic_init(&p_sys->i_M_shareddata,
-		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "mshareddata"));
-	atomic_init(&p_sys->i_L_shareddata,
-		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "lshareddata"));
+	atomic_init(&p_sys->i_msl,
+		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "msl"));
+	atomic_init(&p_sys->i_lsl,
+		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "lsl"));
+	atomic_init(&p_sys->i_testvalue,
+		var_CreateGetIntegerCommand(p_filter, CFG_PREFIX "testvalue"));
 
 	var_AddCallback(p_filter, CFG_PREFIX "color", FilterCallback, p_sys);
 	var_AddCallback(p_filter, CFG_PREFIX "similaritythres", FilterCallback, p_sys);
 	var_AddCallback(p_filter, CFG_PREFIX "saturationthres", FilterCallback, p_sys);
-	var_AddCallback(p_filter, CFG_PREFIX "mshareddata", FilterCallback, p_sys);
-	var_AddCallback(p_filter, CFG_PREFIX "lshareddata", FilterCallback, p_sys);
+	var_AddCallback(p_filter, CFG_PREFIX "msl", FilterCallback, p_sys);
+	var_AddCallback(p_filter, CFG_PREFIX "lsl", FilterCallback, p_sys);
+	var_AddCallback(p_filter, CFG_PREFIX "testvalue", FilterCallback, p_sys);
 
 	return VLC_SUCCESS;
 }
@@ -197,8 +204,9 @@ static void Destroy(vlc_object_t *p_this)
 	var_DelCallback(p_filter, CFG_PREFIX "color", FilterCallback, p_sys);
 	var_DelCallback(p_filter, CFG_PREFIX "similaritythres", FilterCallback, p_sys);
 	var_DelCallback(p_filter, CFG_PREFIX "saturationthres", FilterCallback, p_sys);
-	var_DelCallback(p_filter, CFG_PREFIX "mshareddata", FilterCallback, p_sys);
-	var_DelCallback(p_filter, CFG_PREFIX "lshareddata", FilterCallback, p_sys);
+	var_DelCallback(p_filter, CFG_PREFIX "msl", FilterCallback, p_sys);
+	var_DelCallback(p_filter, CFG_PREFIX "lsl", FilterCallback, p_sys);
+	var_DelCallback(p_filter, CFG_PREFIX "testvalue", FilterCallback, p_sys);
 	free(p_sys);
 }
 
@@ -241,9 +249,12 @@ static picture_t *Filter(filter_t *p_filter, picture_t *p_pic)
 	filter_sys_t *p_sys = (filter_sys_t *) p_filter->p_sys;
 	int i_simthres = atomic_load(&p_sys->i_simthres);
 
-	int64_t m = atomic_load(&p_sys->i_M_shareddata);
-	int64_t l = atomic_load(&p_sys->i_L_shareddata);
-	uint64_t i_shareddata = (m << 32) | (l & 0x00000000FFFFFFFF);
+	int64_t testvalue = atomic_load(&p_sys->i_testvalue);
+
+	int64_t msl = atomic_load(&p_sys->i_msl);
+	int64_t lsl = atomic_load(&p_sys->i_lsl);
+
+	uint64_t i_shareddata = (msl << 32) | (lsl & 0x00000000FFFFFFFF);
 
 	SharedData* p_shareddata = (SharedData*) i_shareddata;
 
@@ -372,10 +383,12 @@ static int FilterCallback(vlc_object_t *p_this, char const *psz_var,
 		atomic_store(&p_sys->i_color, newval.i_int);
 	else if (!strcmp(psz_var, CFG_PREFIX "similaritythres"))
 		atomic_store(&p_sys->i_simthres, newval.i_int);
-	else if (!strcmp(psz_var, CFG_PREFIX "mshareddata"))
-		atomic_store(&p_sys->i_M_shareddata, newval.i_int);
-	else if (!strcmp(psz_var, CFG_PREFIX "lshareddata"))
-		atomic_store(&p_sys->i_L_shareddata, newval.i_int);
+	else if (!strcmp(psz_var, CFG_PREFIX "msl"))
+		atomic_store(&p_sys->i_msl, newval.i_int);
+	else if (!strcmp(psz_var, CFG_PREFIX "lsl"))
+		atomic_store(&p_sys->i_lsl, newval.i_int);
+	else if (!strcmp(psz_var, CFG_PREFIX "testvalue"))
+		atomic_store(&p_sys->i_testvalue, newval.i_int);
 	else /* CFG_PREFIX "saturationthres" */
 		atomic_store(&p_sys->i_satthres, newval.i_int);
 

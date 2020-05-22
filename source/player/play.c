@@ -50,19 +50,6 @@ static void unlock(void *data, void *id, void *const *p_pixels) {
 
     uint16_t *pixels = (uint16_t *)*p_pixels;
 
-    // We can also render stuff.
-    /*int x, y;
-    for(y = 10; y < 40; y++) {
-        for(x = 10; x < 40; x++) {
-            if(x < 13 || y < 13 || x > 36 || y > 36) {
-                pixels[y * WIDTH + x] = 0xffff;
-            } else {
-                // RV16 = 5+6+5 pixels per color, BGR.
-                pixels[y * WIDTH + x] = 0x02ff;
-            }
-        }
-    }*/
-
     SDL_UnlockTexture(c->texture);
     SDL_UnlockMutex(c->mutex);
 }
@@ -101,8 +88,10 @@ int main(int argc, char **argv) {
 	SharedData d;
 	context.pData = &d;
 	int64_t ptr = (intptr_t)(void*)&d;
-	int32_t mi = ptr >> 32;
-	int32_t li = (uint32_t) ptr & 0x00000000FFFFFFFF;
+	long msl = (long)(ptr >> 32);
+	long lsl = (long)(ptr & 0x00000000FFFFFFFF);
+
+	int64_t testvalue = 0x000000007FFFFFFF;
 
 	sprintf(context.pData, "olleh");
 
@@ -110,7 +99,7 @@ int main(int argc, char **argv) {
 		":sout=#transcode{vcodec=h264,acodec=mpga,ab=128,channels=2,samplerate=44100,scodec=none}:duplicate{dst=display,dst=std{access=file{no-overwrite},mux=mp4,dst=a.mp4}",
 	};
 
-	sprintf(sandbox_options, "sandboxfilter{color=0x00FF0000,similaritythres=5,saturationthres=20,mshareddata=%d,lshareddata=%d}", mi , li);
+	sprintf(sandbox_options, "sandboxfilter{color=0x00FF0000,similaritythres=5,saturationthres=20,msl=%li,lsl=%li,testvalue=%lld}", msl, lsl, testvalue);
 
 	char const *vlc_argv[] = {
 		"--verbose=2",

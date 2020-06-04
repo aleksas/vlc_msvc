@@ -67,7 +67,8 @@
             DestinationFiles="%(RelDir)\%(Filename)%(Extension)" 
             SkipUnchangedFiles="true" />
         
-        <Exec Command="powershell -command &quot;Install-Module -Verbose -Name 7Zip4Powershell -Force&quot;" />
+        <Exec Command="powershell -command &quot;Install-PackageProvider -Scope CurrentUser -Name NuGet -MinimumVersion 2.8.5.201 -Force&quot;" />
+        <Exec Command="powershell -command &quot;Install-Module -Scope CurrentUser -Verbose -Name 7Zip4Powershell -Force&quot;" />
         <Exec
             Command="powershell -command &quot;&amp; Expand-7Zip -Verbose -ArchiveFileName 'download\%(RelDir)\%(DownloadFiles.Filename)%(Extension)' -TargetPath '.\dependencies\%(RelDir)' &quot;" />
         <Exec
